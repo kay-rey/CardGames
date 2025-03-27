@@ -1,13 +1,16 @@
+from random import shuffle  # for shuffle() on the lists
+
 from card import Card, createDeck
-from random import shuffle #for shuffle() on the lists
 
 DEALER_STAND_NUMBER: int = 17
 PLAYER_TURN = True
 DEALER_TURN = False
 BLACKJACK: int = 21
 
+
 def dealACard(player: list[Card], deck: list[Card]):
     player.append(deck.pop())
+
 
 def handTotals(player_hand: list[Card]) -> int:
     total = 0
@@ -20,6 +23,7 @@ def handTotals(player_hand: list[Card]) -> int:
             total += 10
     return total
 
+
 def getPlayerInput() -> str:
     playerInputLowered: str = ''
     while True:
@@ -31,6 +35,7 @@ def getPlayerInput() -> str:
             elif playerInputLowered == 's':
                 return 'STAND'
         print('Input a valid option')
+
 
 def playerOutcome(player_total: int, dealer_total: int) -> str:
     if player_total > dealer_total:
@@ -61,7 +66,8 @@ def playBlackjack(num_seats: int, num_decks: int):
             print('You hit blackjack with a hand of ' + str(playerHand[0]) + ' and ' + str(playerHand[1]))
             break
         if dealerTotal == 21:
-            print('The dealer hit blackjack with a hand of ' + str(dealerHand[0]) + ' and ' + str(dealerHand[1]) + '. Better luck next time')
+            print('The dealer hit blackjack with a hand of ' + str(dealerHand[0]) + ' and ' + str(
+                dealerHand[1]) + '. Better luck next time')
             break
         print(f'The dealer revealed a {dealerHand[0]}')
         print(f'You have a hand total of {str(playerTotal)} with a hand of {playerHand[0]} and {playerHand[1]}')
@@ -79,7 +85,8 @@ def playBlackjack(num_seats: int, num_decks: int):
                     print('You busted! Bye Bye!!')
                     break
         while DEALER_TURN:
-            print(f'The dealer reveals their second card: {dealerHand[-1]}. Their hand total is {handTotals(dealerHand)}')
+            print(
+                f'The dealer reveals their second card: {dealerHand[-1]}. Their hand total is {handTotals(dealerHand)}')
             while handTotals(dealerHand) < 17:
                 dealACard(dealerHand, decks)
                 print(f'The dealer drew a {dealerHand[-1]}. Their total is now {handTotals(dealerHand)}')
@@ -97,5 +104,6 @@ def playBlackjack(num_seats: int, num_decks: int):
                 print('You lost! The house always wins')
                 break
         break
+
 
 playBlackjack(1, 1)

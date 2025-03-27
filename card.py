@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class Card:
     number: str
@@ -7,6 +8,7 @@ class Card:
 
     def __str__(self):
         return f'{self.number} of {self.suit}s'
+
 
 def createDeck(num_decks) -> list[Card]:
     deck = []
