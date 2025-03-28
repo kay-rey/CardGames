@@ -21,3 +21,6 @@ def createDeck(num_decks) -> list[Card]:
     if num_decks > 0:
         deck *= num_decks
     return deck
+
+def dealACard(player: list[Card], deck: list[Card]):
+    player.append(deck.pop())
