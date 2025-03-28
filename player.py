@@ -1,5 +1,7 @@
-from card import Card
 from dataclasses import dataclass
+
+from card import Card
+
 
 @dataclass
 class Player:
@@ -9,6 +11,7 @@ class Player:
 
     def __str__(self):
         return f'{self.name} has ${self.money}. With a hand of {self.hand}'
+
 
 def handTotals(player_hand: list[Card]) -> int:
     total = 0
@@ -20,3 +23,8 @@ def handTotals(player_hand: list[Card]) -> int:
         elif card.number in ('King', 'Queen', 'Jack'):
             total += 10
     return total
+
+
+def clearHand(players: list[Player]):
+    for player in players:
+        player.hand.clear()

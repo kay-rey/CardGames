@@ -22,5 +22,6 @@ def createDeck(num_decks) -> list[Card]:
         deck *= num_decks
     return deck
 
+
 def dealACard(player: list[Card], deck: list[Card]):
     player.append(deck.pop())
