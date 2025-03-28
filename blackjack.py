@@ -1,27 +1,14 @@
-from card import Card, createDeck
-from random import shuffle #for shuffle() on the lists
+from random import shuffle  # for shuffle() on the lists
+
+from card import Card, dealACard
+from player import Player, handTotals, yesNoInput
 
 DEALER_STAND_NUMBER: int = 17
-PLAYER_TURN = True
-DEALER_TURN = False
 BLACKJACK: int = 21
+TOTAL_BET: int = 0
 
-def dealACard(player: list[Card], deck: list[Card]):
-    player.append(deck.pop())
 
-def handTotals(player_hand: list[Card]) -> int:
-    total = 0
-    for card in player_hand:
-        if card.number not in ('Ace', 'King', 'Queen', 'Jack'):
-            total += int(card.number)
-        elif card.number == 'Ace':
-            total += 11
-        elif card.number in ('King', 'Queen', 'Jack'):
-            total += 10
-    return total
-
-def getPlayerInput() -> str:
-    playerInputLowered: str = ''
+def hitOrStandPlayerInput() -> str:
     while True:
         playerInput = input('Would you like to [H]it or [S]tand?')
         if isinstance(playerInput, str):
@@ -32,70 +19,93 @@ def getPlayerInput() -> str:
                 return 'STAND'
         print('Input a valid option')
 
+
 def playerOutcome(player_total: int, dealer_total: int) -> str:
-    if player_total > dealer_total:
+    if dealer_total < player_total <= BLACKJACK:
         return 'WIN'
-    elif player_total < dealer_total:
+    elif player_total < dealer_total <= BLACKJACK:
         return 'LOSE'
     else:
         return 'PUSH'
 
 
-def playBlackjack(num_seats: int, num_decks: int):
-    global PLAYER_TURN, DEALER_TURN
-    players: list[list[Card]] = []
-    playerTotal: int = 0
-    dealerTotal: int = 0
-    playerHand: list[Card] = []
-    dealerHand: list[Card] = []
-    while True:
-        decks: list[Card] = createDeck(num_decks)
+def playBlackjack(player: Player, dealer: Player, decks: list[Card]):
+    player_turn: bool = True
+    playerTotal: int
+    dealerTotal: int
+    initialBet: int
+    totalBet: int
+    print(f'You have ${player.money} in the bank')
+    while True:  # loop starts the betting
+        try:
+            initialBet = int(input('How much would you like to bet?\n'))
+            totalBet = initialBet
+            if 1 <= initialBet <= player.money:
+                print(f'You bet {initialBet}')
+                break
+            print('Enter a valid input')
+        except ValueError:
+            print('Enter a valid number')
+    while True:  # blackjack begins here
         shuffle(decks)
         print('Dealing the cards...')
         for i in range(2):
-            dealACard(playerHand, decks)
-            dealACard(dealerHand, decks)
-        playerTotal = handTotals(playerHand)
-        dealerTotal = handTotals(dealerHand)
+            dealACard(player.hand, decks)
+            dealACard(dealer.hand, decks)
+        playerTotal = handTotals(player.hand)
+        dealerTotal = handTotals(dealer.hand)
         if playerTotal == 21:
-            print('You hit blackjack with a hand of ' + str(playerHand[0]) + ' and ' + str(playerHand[1]))
+            winnings = initialBet * 2
+            print('You hit blackjack with a hand of ' + str(player.hand[0]) + ' and ' + str(player.hand[1]))
+            print(f'You won ${str(winnings)}')
             break
         if dealerTotal == 21:
-            print('The dealer hit blackjack with a hand of ' + str(dealerHand[0]) + ' and ' + str(dealerHand[1]) + '. Better luck next time')
+            print('The dealer hit blackjack with a hand of ' + str(dealer.hand[0]) + ' and ' + str(
+                dealer.hand[1]) + '. Better luck next time')
+            player.money -= initialBet
+            print(f'You lost ${initialBet}')
             break
-        print(f'The dealer revealed a {dealerHand[0]}')
-        print(f'You have a hand total of {str(playerTotal)} with a hand of {playerHand[0]} and {playerHand[1]}')
-        while PLAYER_TURN:
-            playerInput: str = getPlayerInput()
+        print(f'The dealer revealed a {dealer.hand[0]}')
+        print(f'You have a hand total of {str(playerTotal)} with a hand of {player.hand[0]} and {player.hand[1]}')
+        print('Would you like to double down?')
+        doubleDownAnswer = yesNoInput()
+        if doubleDownAnswer:
+            totalBet = initialBet * 2
+            dealACard(player.hand, decks)
+            print(f'You were dealt a {player.hand[-1]}')
+            player_turn = False
+        while player_turn:
+            playerInput: str = hitOrStandPlayerInput()
             print('You chose to ' + playerInput)
             if playerInput == 'STAND':
-                PLAYER_TURN = False
-                DEALER_TURN = True
+                player_turn = False
             elif playerInput == 'HIT':
-                dealACard(playerHand, decks)
-                playerTotal = handTotals(playerHand)
-                print(f'You were dealt a {playerHand[-1]}, your total is now {playerTotal}')
+                dealACard(player.hand, decks)
+                playerTotal = handTotals(player.hand)
+                print(f'You were dealt a {player.hand[-1]}, your total is now {playerTotal}')
                 if playerTotal > BLACKJACK:
                     print('You busted! Bye Bye!!')
                     break
-        while DEALER_TURN:
-            print(f'The dealer reveals their second card: {dealerHand[-1]}. Their hand total is {handTotals(dealerHand)}')
-            while handTotals(dealerHand) < 17:
-                dealACard(dealerHand, decks)
-                print(f'The dealer drew a {dealerHand[-1]}. Their total is now {handTotals(dealerHand)}')
-            playerOutcomeCondition = playerOutcome(handTotals(playerHand), handTotals(dealerHand))
-            if handTotals(dealerHand) > BLACKJACK:
+        while not player_turn:
+            print(
+                f'The dealer reveals their second card: {dealer.hand[-1]}. Their hand total is {handTotals(dealer.hand)}')
+            while handTotals(dealer.hand) < 17:
+                dealACard(dealer.hand, decks)
+                print(f'The dealer drew a {dealer.hand[-1]}. Their total is now {handTotals(dealer.hand)}')
+            playerOutcomeCondition = playerOutcome(handTotals(player.hand), handTotals(dealer.hand))
+            if handTotals(dealer.hand) > BLACKJACK:
                 print('The dealer BUSTED. You win!')
+                player.money += totalBet
                 break
             if playerOutcomeCondition == 'PUSH':
                 print('Push! No one wins')
                 break
             elif playerOutcomeCondition == 'WIN':
                 print('You WON!! Congrats')
+                player.money += totalBet
                 break
             else:
                 print('You lost! The house always wins')
+                player.money -= totalBet
                 break
         break
-
-playBlackjack(1, 1)
