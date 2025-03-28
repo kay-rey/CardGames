@@ -1,14 +1,14 @@
 from random import shuffle  # for shuffle() on the lists
 
 from card import Card, dealACard
-from player import Player, handTotals
+from player import Player, handTotals, yesNoInput
 
 DEALER_STAND_NUMBER: int = 17
 BLACKJACK: int = 21
 TOTAL_BET: int = 0
 
 
-def getPlayerInput() -> str:
+def hitOrStandPlayerInput() -> str:
     while True:
         playerInput = input('Would you like to [H]it or [S]tand?')
         if isinstance(playerInput, str):
@@ -21,9 +21,9 @@ def getPlayerInput() -> str:
 
 
 def playerOutcome(player_total: int, dealer_total: int) -> str:
-    if player_total > dealer_total:
+    if dealer_total < player_total <= BLACKJACK:
         return 'WIN'
-    elif player_total < dealer_total:
+    elif player_total < dealer_total <= BLACKJACK:
         return 'LOSE'
     else:
         return 'PUSH'
@@ -38,11 +38,12 @@ def playBlackjack(player: Player, dealer: Player, decks: list[Card]):
     print(f'You have ${player.money} in the bank')
     while True:  # loop starts the betting
         try:
-            initialBet = int(input('How much would you like to bet?'))
-            TOTAL_BET = initialBet
+            initialBet = int(input('How much would you like to bet?\n'))
+            totalBet = initialBet
             if 1 <= initialBet <= player.money:
                 print(f'You bet {initialBet}')
-            break
+                break
+            print('Enter a valid input')
         except ValueError:
             print('Enter a valid number')
     while True:  # blackjack begins here
@@ -66,22 +67,15 @@ def playBlackjack(player: Player, dealer: Player, decks: list[Card]):
             break
         print(f'The dealer revealed a {dealer.hand[0]}')
         print(f'You have a hand total of {str(playerTotal)} with a hand of {player.hand[0]} and {player.hand[1]}')
-        while True:  # start of the double down
-            doubleDownAnswer = input('Would you like double down?')
-            if isinstance(doubleDownAnswer, str):
-                playerInputLowered: str = doubleDownAnswer.lower()
-                if playerInputLowered == 'y':
-                    TOTAL_BET = initialBet * 2
-                    dealACard(player.hand, decks)
-                    print(f'You were dealt a {player.hand[-1]}')
-                    player_turn = False
-                    break
-                elif playerInputLowered == 'n':
-                    break
-                else:
-                    print('Input a valid option')
+        print('Would you like to double down?')
+        doubleDownAnswer = yesNoInput()
+        if doubleDownAnswer:
+            totalBet = initialBet * 2
+            dealACard(player.hand, decks)
+            print(f'You were dealt a {player.hand[-1]}')
+            player_turn = False
         while player_turn:
-            playerInput: str = getPlayerInput()
+            playerInput: str = hitOrStandPlayerInput()
             print('You chose to ' + playerInput)
             if playerInput == 'STAND':
                 player_turn = False
@@ -101,17 +95,17 @@ def playBlackjack(player: Player, dealer: Player, decks: list[Card]):
             playerOutcomeCondition = playerOutcome(handTotals(player.hand), handTotals(dealer.hand))
             if handTotals(dealer.hand) > BLACKJACK:
                 print('The dealer BUSTED. You win!')
-                player.money += TOTAL_BET
+                player.money += totalBet
                 break
             if playerOutcomeCondition == 'PUSH':
                 print('Push! No one wins')
                 break
             elif playerOutcomeCondition == 'WIN':
                 print('You WON!! Congrats')
-                player.money += TOTAL_BET
+                player.money += totalBet
                 break
             else:
                 print('You lost! The house always wins')
-                player.money -= TOTAL_BET
+                player.money -= totalBet
                 break
         break

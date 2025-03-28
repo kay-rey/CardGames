@@ -28,3 +28,15 @@ def handTotals(player_hand: list[Card]) -> int:
 def clearHand(players: list[Player]):
     for player in players:
         player.hand.clear()
+
+
+def yesNoInput() -> bool:
+    while True:
+        playerInput = input()
+        if isinstance(playerInput, str):
+            playerInputLowered: str = playerInput.lower()
+            if playerInputLowered == 'y':
+                return True
+            elif playerInputLowered == 'n':
+                return False
+        print('Input a valid option')

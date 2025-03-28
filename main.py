@@ -2,32 +2,28 @@ import sys
 
 from blackjack import playBlackjack
 from card import createDeck
-from player import Player, clearHand
+from player import Player, clearHand, yesNoInput
 
 
 def main():
     player = Player('Kevin', 1000, [])
     dealer = Player('Dealer', 0, [])
-    deck = createDeck(1)
+    num_decks = 1
+    deck = createDeck(num_decks)
     deckAmount = len(deck)
     while True:
         playBlackjack(player, dealer, deck)
-        while True:
-            playerInput = input('Would you like to play again? Y/N')
-            if isinstance(playerInput, str):
-                playerInputLowered: str = playerInput.lower()
-                if playerInputLowered == 'y':
-                    if len(deck) < int(
-                            deckAmount // 2):  # create a new deck if there are less than half remaining in the deck
-                        print('Shuffling deck...')
-                        deck = createDeck(1)
-                    clearHand([player, dealer])
-                    break
-                elif playerInputLowered == 'n':
-                    print(f'You left with {player.money} in your pocket')
-                    print('BYEEE!!')
-                    sys.exit()
-            print('Input a valid option')
+        print('Would you like to play again? Y/N')
+        playAgainInput = yesNoInput()
+        if playAgainInput:
+            if len(deck) < int(deckAmount // 2):
+                print('Shuffling deck...')
+                deck = createDeck(num_decks)
+            clearHand([player, dealer])
+        else:
+            print(f'You left with {player.money} in your pocket')
+            print('BYEEE!!')
+            sys.exit()
 
 
 if __name__ == '__main__':
