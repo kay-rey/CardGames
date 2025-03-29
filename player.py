@@ -42,5 +42,5 @@ def yesNoInput() -> bool:
         print('Input a valid option')
 
 
-def dealACard(player: Player, deck: list[Card]):
-    player.hand.append(deck.pop())
+def dealACard(player_hand: list[Card], deck: list[Card]):
+    player_hand.append(deck.pop())

@@ -103,8 +103,8 @@ def playBlackjack(player: Player, dealer: Player, decks: list[Card]):
         shuffle(decks)
         print('Dealing the cards...')
         for i in range(2):
-            dealACard(player, decks)
-            dealACard(dealer, decks)
+            dealACard(player.hand, decks)
+            dealACard(dealer.hand, decks)
         playerTotal = handTotals(player)
         dealerTotal = handTotals(dealer)
         if playerTotal == 21:
@@ -127,7 +127,7 @@ def playBlackjack(player: Player, dealer: Player, decks: list[Card]):
                 playerInput: str = hitOrStandPlayerInput()
             print('You chose to ' + playerInput)
             if playerInput == 'HIT':
-                dealACard(player, decks)
+                dealACard(player.hand, decks)
                 playerTotal = handTotals(player)
                 print(f'You were dealt a {player.hand[-1]}, your total is now {playerTotal}')
                 if playerTotal > BLACKJACK:
@@ -138,7 +138,7 @@ def playBlackjack(player: Player, dealer: Player, decks: list[Card]):
                 player_turn = False
             elif playerInput == 'DOUBLEDOWN':
                 totalBet = initialBet * 2
-                dealACard(player, decks)
+                dealACard(player.hand, decks)
                 print(f'You were dealt a {player.hand[-1]}')
                 if handTotals(player) > BLACKJACK:
                     print('You BUSTED. Better luck next time')
@@ -153,7 +153,7 @@ def playBlackjack(player: Player, dealer: Player, decks: list[Card]):
             print(
                 f'The dealer reveals their second card: {dealer.hand[-1]}. Their hand total is {handTotals(dealer)}')
             while handTotals(dealer) < 17:
-                dealACard(dealer, decks)
+                dealACard(dealer.hand, decks)
                 print(f'The dealer drew a {dealer.hand[-1]}. Their total is now {handTotals(dealer)}')
             playerOutcomeCondition = playerOutcome(handTotals(player), handTotals(dealer))
             if handTotals(dealer) > BLACKJACK:
