@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from card import Card
 
@@ -6,16 +6,16 @@ from card import Card
 @dataclass
 class Player:
     name: str
-    money: int
-    hand: list[Card]
+    money: int = 0
+    hand: list[Card] = field(default_factory=list)
 
     def __str__(self):
         return f'{self.name} has ${self.money}. With a hand of {self.hand}'
 
 
-def handTotals(player_hand: list[Card]) -> int:
+def handTotals(player: Player) -> int:
     total = 0
-    for card in player_hand:
+    for card in player.hand:
         if card.number not in ('Ace', 'King', 'Queen', 'Jack'):
             total += int(card.number)
         elif card.number == 'Ace':
@@ -40,3 +40,7 @@ def yesNoInput() -> bool:
             elif playerInputLowered == 'n':
                 return False
         print('Input a valid option')
+
+
+def dealACard(player: Player, deck: list[Card]):
+    player.hand.append(deck.pop())

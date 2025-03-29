@@ -6,11 +6,12 @@ from player import Player, clearHand, yesNoInput
 
 
 def main():
-    player = Player('Kevin', 1000, [])
-    dealer = Player('Dealer', 0, [])
+    player = Player('Kevin', 1000)
+    dealer = Player('Dealer')
     num_decks = 1
     deck = createDeck(num_decks)
     deckAmount = len(deck)
+    print(int(3.5))
     while True:
         playBlackjack(player, dealer, deck)
         print('Would you like to play again? Y/N')
