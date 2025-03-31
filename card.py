@@ -1,41 +1,33 @@
 from dataclasses import dataclass
-from random import shuffle
 
 
 @dataclass
 class Card:
+    """
+            Initializes a Card object.
+
+            Args:
+                number: The card's number (e.g., '2', '10', 'J', 'Q', 'K', 'A').
+                suit: The card's suit (e.g., 'Heart', 'Club', 'Diamond', 'Spade').
+    """
     number: str
     suit: str
 
     def __str__(self):
         return f'{self.number} of {self.suit}s'
 
+    def __repr__(self):
+        return f'Card(number=\'{self.number}\', suit=\'{self.suit}\''
 
-class Deck:
-    deck: list[Card]
+    def value(self) -> int:
+        """
+                Returns the numerical value of the card.
 
-    def __len__(self) -> int:
-        return len(self.deck)
-
-    def createDeck(self, num_decks):
-        deck = []
-        suits = ['Spade', 'Heart', 'Club', 'Diamond']
-        number = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
-        for currNumber in number:
-            for currSuit in suits:
-                currCard = Card(currNumber, currSuit)
-                deck.append(currCard)
-        if num_decks > 0:
-            deck *= num_decks
-        self.deck = deck
-
-    def shuffleDeck(self):
-        print('Shuffling deck')
-        shuffle(self.deck)
-
-    def popDeck(self) -> Card | None:
-        if self.deck:
-            return self.deck.pop()
+                Jack, Queen, and King are 10. Ace is 11 or 1.
+        """
+        if self.number in ('J', 'Q', 'K'):
+            return 10
+        if self.number == 'A':
+            return 11
         else:
-            print('Deck is empty is empty')
-            return None
+            return int(self.number)

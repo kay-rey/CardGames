@@ -1,7 +1,7 @@
 import sys
 
 from blackjack import playBlackjack
-from card import Deck
+from deck import Deck
 from player import Player, clearHands, yesNoInput
 
 

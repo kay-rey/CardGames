@@ -1,6 +1,7 @@
 from typing import Dict
 
-from card import Deck, Card
+from card import Card
+from deck import Deck
 from player import Player, handTotals, dealACard
 
 # Constants (Good practice to define these at the top)
