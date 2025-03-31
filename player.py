@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from card import Card
+from card import Card, Deck
 
 
 @dataclass
@@ -9,8 +9,27 @@ class Player:
     money: int = 0
     hand: list[Card] = field(default_factory=list)
 
-    def __str__(self):
-        return f'{self.name} has ${self.money}. With a hand of {self.hand}'
+    # def __str__(self):
+    #     return f'{self.name} has ${self.money}. With a hand of {self.hand}'
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Player):
+            return False
+        return (self.name, self.hand) == (other.name, other.hand)
+
+    def addMoney(self, amount: int) -> None:
+        print('You won $' + str(amount))
+        self.money += amount
+
+    def subtractMoney(self, amount: int) -> None:
+        print('You lost $' + str(amount))
+        self.money -= amount
+
+    def clearHand(self):
+        self.hand.clear()
 
 
 def handTotals(player: Player) -> int:
@@ -25,9 +44,9 @@ def handTotals(player: Player) -> int:
     return total
 
 
-def clearHand(players: list[Player]):
+def clearHands(players: list[Player]):
     for player in players:
-        player.hand.clear()
+        player.clearHand()
 
 
 def yesNoInput() -> bool:
@@ -42,5 +61,5 @@ def yesNoInput() -> bool:
         print('Input a valid option')
 
 
-def dealACard(player: Player, deck: list[Card]):
-    player.hand.append(deck.pop())
+def dealACard(player_hand: list[Card], deck: Deck):
+    player_hand.append(deck.popDeck())
