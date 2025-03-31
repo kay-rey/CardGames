@@ -9,8 +9,16 @@ class Player:
     money: int = 0
     hand: list[Card] = field(default_factory=list)
 
-    def __str__(self):
-        return f'{self.name} has ${self.money}. With a hand of {self.hand}'
+    # def __str__(self):
+    #     return f'{self.name} has ${self.money}. With a hand of {self.hand}'
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Player):
+            return False
+        return (self.name, self.hand) == (other.name, other.hand)
 
     def addMoney(self, amount: int) -> None:
         print('You won $' + str(amount))
