@@ -7,7 +7,7 @@ class Deck:
     def __len__(self) -> int:
         return len(self.cards)
 
-    def createDeck(self, num_decks):
+    def create_deck(self, num_decks):
         deck = []
         suits = ['Spade', 'Heart', 'Club', 'Diamond']
         number = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
@@ -19,11 +19,11 @@ class Deck:
             deck *= num_decks
         self.cards = deck
 
-    def shuffleDeck(self):
+    def shuffle_deck(self):
         print('Shuffling deck')
         shuffle(self.cards)
 
-    def popDeck(self) -> Card | None:
+    def pop_deck(self) -> Card | None:
         if self.cards:
             return self.cards.pop()
         else:

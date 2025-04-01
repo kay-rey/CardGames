@@ -25,20 +25,20 @@ class Player:
             return False
         return (self.name, self.hand) == (other.name, other.hand)
 
-    def addMoney(self, amount: int) -> None:
+    def add_money(self, amount: int) -> None:
         if amount > 0:
             print('You won $' + str(amount))
             self.money += amount
 
-    def subtractMoney(self, amount: int) -> None:
+    def subtract_money(self, amount: int) -> None:
         if amount > 0:
             print('You lost $' + str(amount))
             self.money -= amount
 
-    def clearHand(self):
+    def clear_hand(self):
         self.hand.clear()
 
-    def getHandValue(self) -> int:
+    def get_hand_value(self) -> int:
         """
         Calculates the total value of the player's hand, considering Aces.
         """
@@ -57,24 +57,12 @@ class Player:
         return hand_total
 
 
-def handTotals(player: Player) -> int:
-    total = 0
-    for card in player.hand:
-        if card.number not in ('Ace', 'King', 'Queen', 'Jack'):
-            total += int(card.number)
-        elif card.number == 'Ace':
-            total += 11
-        elif card.number in ('King', 'Queen', 'Jack'):
-            total += 10
-    return total
-
-
-def clearHands(players: list[Player]):
+def clear_hands(players: list[Player]):
     for player in players:
-        player.clearHand()
+        player.clear_hand()
 
 
-def yesNoInput() -> bool:
+def yes_no_input() -> bool:
     while True:
         playerInput = input()
         if isinstance(playerInput, str):
@@ -86,5 +74,5 @@ def yesNoInput() -> bool:
         print('Input a valid option')
 
 
-def dealACard(player_hand: list[Card], deck: Deck):
-    player_hand.append(deck.popDeck())
+def deal_card(player_hand: list[Card], deck: Deck):
+    player_hand.append(deck.pop_deck())
