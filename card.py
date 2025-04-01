@@ -25,9 +25,27 @@ class Card:
 
                 Jack, Queen, and King are 10. Ace is 11 or 1.
         """
-        if self.number in ('J', 'Q', 'K'):
+        if self.number in ('Jack', 'Queen', 'King'):
             return 10
-        if self.number == 'A':
+        if self.number == 'Ace':
+            return 11
+        else:
+            return int(self.number)
+
+class WarCard(Card):
+    """
+                    Returns the numerical value of the card.
+
+                    Jack is 11, Queen is 12, King is 13, and Ace is 14.
+            """
+    def value(self) -> int:
+        if self.number == 'Ace':
+            return 14
+        elif self.number == 'King':
+            return 13
+        elif self.number == 'Queen':
+            return 12
+        elif self.number == 'Jack':
             return 11
         else:
             return int(self.number)

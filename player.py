@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 
 from card import Card
 from deck import Deck
+import random
 
 
 @dataclass
@@ -25,6 +26,9 @@ class Player:
             return False
         return (self.name, self.hand) == (other.name, other.hand)
 
+    def __len__(self) -> int:
+        return len(self.hand)
+
     def add_money(self, amount: int) -> None:
         if amount > 0:
             print('You won $' + str(amount))
@@ -37,6 +41,20 @@ class Player:
 
     def clear_hand(self):
         self.hand.clear()
+
+    def add_card(self, card: Card):
+        if isinstance(card, Card):
+            self.hand.append(card)
+
+    def pop_top_card(self):
+        if self.hand:
+            return self.hand.pop(0)
+        else:
+            print('No more cards in hand')
+            return None
+    def shuffle_hand(self):
+        if self.hand:
+            random.shuffle(self.hand)
 
     def get_hand_value(self) -> int:
         """
@@ -57,19 +75,19 @@ class Player:
         return hand_total
 
 
-def clear_hands(players: list[Player]):
+def clear_list_of_hands(players: list[Player]):
     for player in players:
         player.clear_hand()
 
 
 def yes_no_input() -> bool:
     while True:
-        playerInput = input()
-        if isinstance(playerInput, str):
-            playerInputLowered: str = playerInput.lower()
-            if playerInputLowered == 'y':
+        player_input = input()
+        if isinstance(player_input, str):
+            player_input_lowered: str = player_input.lower()
+            if player_input_lowered == 'y':
                 return True
-            elif playerInputLowered == 'n':
+            elif player_input_lowered == 'n':
                 return False
         print('Input a valid option')
 
