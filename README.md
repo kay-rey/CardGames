@@ -37,13 +37,13 @@ The game follows standard Blackjack rules, with the following features:
 - **Betting:** Players can place bets before each round.
 - **Dealing:** The player and dealer are dealt two cards each.
 - **Player's Turn:**
-    -      Players can choose to "Hit" (take another card), "Stand" (end their turn), "Double Down" (double their bet and take one more card), or "Split" (if they have two cards of the same value).
+  - Players can choose to "Hit" (take another card), "Stand" (end their turn), "Double Down" (double their bet and take one more card), or "Split" (if they have two cards of the same value).
 - **Dealer's Turn:**
-    -      The dealer reveals their hidden card and hits until their hand total is 17 or more.
+  - The dealer reveals their hidden card and hits until their hand total is 17 or more.
 - **Outcome:**
-    -      The player wins if their hand total is closer to 21 than the dealer's, without exceeding 21.
-    -      The player loses if their hand total exceeds 21 or is less than the dealer's total.
-    - A push occurs if both player and dealer have the same hand total.
+  - The player wins if their hand total is closer to 21 than the dealer's, without exceeding 21.
+  - The player loses if their hand total exceeds 21 or is less than the dealer's total.
+  - A push occurs if both player and dealer have the same hand total.
 - **Splitting Hands:** If the player has two cards of the same value, they have the option to split their hand into two
   separate hands, each with its own bet.
 - **Doubling Down:** The player can double their initial bet, and then gets dealt only one more card.
@@ -70,16 +70,16 @@ The game follows standard Blackjack rules, with the following features:
 
 - `Card` class: Represents a playing card with a number and suit.
 - `Deck` class: Represents a deck of cards with methods for dealing and shuffling.
-    - `createDeck()`: creates a deck with the specified number of standard 52 card decks.
-    - `shuffleDeck()`: shuffles the deck.
-    - `popDeck()`: removes and returns the top card of the deck.
+  - `createDeck()`: creates a deck with the specified number of standard 52 card decks.
+  - `shuffleDeck()`: shuffles the deck.
+  - `popDeck()`: removes and returns the top card of the deck.
 
 ### `player.py`
 
 - `Player` class: Represents a player with a hand, money, and methods for adding/subtracting money.
-    - `addMoney()`: Adds money to the player's balance.
-    - `subtractMoney()`: Subtracts money from the player's balance.
-    - `clearHand()`: clears all cards from the players hand.
+  - `addMoney()`: Adds money to the player's balance.
+  - `subtractMoney()`: Subtracts money from the player's balance.
+  - `clearHand()`: clears all cards from the players hand.
 - `handTotals()`: Calculates the total value of a hand.
 - `clearHands()`: clears the hands of a list of players.
 - `yesNoInput()`: gets a yes or no input from the user.

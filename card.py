@@ -41,7 +41,7 @@ class WarCard(Card):
             """
 
     def value(self) -> int:
-        if self.number in ['J', 'Q', 'K', 'A']:
-            return 11 + ['J', 'Q', 'K', 'A'].index(self.number)
+        if self.number in ['Jack', 'Queen', 'King', 'Ace']:
+            return 11 + ['Jack', 'Queen', 'King', 'Ace'].index(self.number)
         else:
             return int(self.number)
