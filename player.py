@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from card import Card
+from card import Card, WarCard
 from deck import Deck
 import random
 
@@ -11,6 +11,7 @@ class Player:
     name: str
     money: int = 0
     hand: list[Card] = field(default_factory=list)
+    winnings_pile: list[Card] = field(default_factory=list)
 
     def __str__(self):
         return f'{self.name} has ${self.money}. With a hand of {self.hand}'
@@ -74,6 +75,16 @@ class Player:
             num_aces -= 1
         return hand_total
 
+    def add_to_winnings(self, winnings_pile: list[WarCard]):
+        if winnings_pile:
+            self.winnings_pile += winnings_pile
+
+    def add_winnings_to_hand(self):
+        if self.winnings_pile:
+            print(f'Shuffling winnings into {self.name}\'s hand...')
+            self.hand += self.winnings_pile
+            self.shuffle_hand()
+            self.winnings_pile.clear()
 
 def clear_list_of_hands(players: list[Player]):
     for player in players:

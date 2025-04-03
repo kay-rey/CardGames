@@ -49,6 +49,7 @@ def main():
 
     while game_choice == 2:
         play_war(player)
+        return
 
 if __name__ == '__main__':
     main()

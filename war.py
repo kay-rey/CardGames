@@ -19,6 +19,16 @@ def war_option(player: Player, dealer: Player, played_cards: list[WarCard]):
     """
     print('WAR!!')
     war_cards = played_cards
+    if (len(player.hand) < 3 and len(player.winnings_pile) < 3) or (len(dealer.hand) < 3 and len(dealer.winnings_pile) < 3):
+        print('Not enough cards to go to WAR')
+        for card in war_cards:
+            player.add_card(card)
+            dealer.add_card(card)
+        return
+    if len(player) <= 3:
+        player.add_winnings_to_hand()
+    if len(dealer) <= 3:
+        dealer.add_winnings_to_hand()
     for _ in range(2):
         war_cards.append(player.pop_top_card())
         war_cards.append(dealer.pop_top_card())
@@ -29,20 +39,15 @@ def war_option(player: Player, dealer: Player, played_cards: list[WarCard]):
         print('There are no more cards')
         return
     print(f'Player 1 revealed a {player_card}. Player 2 revealed a {dealer_card}')
+    war_cards += [player_card, dealer_card]
     if player_card.value() > dealer_card.value():
         print(f'{player.name} won the war!')
-        player.add_card(player_card)
-        player.add_card(dealer_card)
-        for card in war_cards:
-            player.add_card(card)
+        player.add_to_winnings(war_cards)
     elif player_card.value() < dealer_card.value():
         print(f'{dealer.name} won this hand')
-        dealer.add_card(player_card)
-        dealer.add_card(dealer_card)
-        for card in war_cards:
-            dealer.add_card(card)
+        dealer.add_to_winnings(war_cards)
     elif player_card.value() == dealer_card.value():
-        war_option(player, dealer)
+        war_option(player, dealer, war_cards)
 
 def play_war(player: Player):
     """
@@ -55,7 +60,9 @@ def play_war(player: Player):
     card2: WarCard
     total_bet: int = 0
     player1: Player = player
-    player2: Player = Player('Player 2')
+    player2: Player = Player('Dealer')
+    player1_total = 0
+    player2_total = 0
     deck: Deck = Deck()
     deck.create_deck(NUM_DECKS, 'war')
     deck.shuffle_deck()
@@ -75,33 +82,47 @@ def play_war(player: Player):
     print(f'{len(player1)} and {len(player2)}')
     player1.shuffle_hand()
     player2.shuffle_hand()
-    while len(player1) <= 52 or len(player2) <= 52:
+    player1_total = len(player1.hand) + len(player1.winnings_pile)
+    player2_total = len(player2.hand) + len(player2.winnings_pile)
+    while min(player1_total, player2_total) > 0:
+        if len(player1) <= 1:
+            player1.add_winnings_to_hand()
+        if len(player2) <= 1:
+            player2.add_winnings_to_hand()
         if player1 and player2:
             card1 = player1.pop_top_card()
             card2 = player2.pop_top_card()
         else:
             return
         print(f'{player1.name} revealed a {card1}. {player2.name} revealed a {card2}')
+        played_cards = [card1, card2]
         if card1.value() > card2.value():
             print(f'{player1.name} won this hand')
-            player1.add_card(card1)
-            player1.add_card(card2)
+            player1.add_to_winnings(played_cards)
         elif card1.value() < card2.value():
             print(f'{player2.name} won this hand')
-            player2.add_card(card1)
-            player2.add_card(card2)
+            player2.add_to_winnings(played_cards)
         elif card1.value() == card2.value():
-            played_cards = [card1, card2]
-            war_option(player1, player2, played_cards)
-        print(f'{player1.name} has {len(player1)} cards. {player2.name} has {len(player2)} cards')
-        input()
-    if len(player1) == 52:
+            if (len(player.hand) < 3 and len(player.winnings_pile) < 3) or (
+                    len(player2.hand) < 3 and len(player2.winnings_pile) < 3):
+                print('Not enough card to go to war')
+                player.add_card(card1)
+                player2.add_card(card2)
+            else:
+                war_option(player1, player2, played_cards)
+        player1_total = len(player1.hand) + len(player1.winnings_pile)
+        player2_total = len(player2.hand) + len(player2.winnings_pile)
+        print(f'{player1_total + player2_total} cards in total')
+        print(f'{player1.name}:{len(player1)} in hand {len(player1.winnings_pile)} in pile.\n{player2.name}:{len(player2)} in hand {len(player2.winnings_pile)} in pile.')
+        # input()
+    if player1_total == 52:
         winner = player1.name
         player1.add_money(total_bet)
-    elif len(player2) == 52:
+    elif player2_total == 52:
         winner = player2.name
         player1.subtract_money(total_bet)
     else:
         print('Uh oh there is no winner. Something went wrong')
         winner = 'None'
     print(f'Game Over. {winner} won')
+    return
