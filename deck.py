@@ -1,5 +1,7 @@
-from card import Card, WarCard
 from random import shuffle
+
+from card import Card, WarCard
+
 
 class Deck:
     cards: list[Card]

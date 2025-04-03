@@ -19,7 +19,8 @@ def war_option(player: Player, dealer: Player, played_cards: list[WarCard]):
     """
     print('WAR!!')
     war_cards = played_cards
-    if (len(player.hand) < 3 and len(player.winnings_pile) < 3) or (len(dealer.hand) < 3 and len(dealer.winnings_pile) < 3):
+    if (len(player.hand) < 3 and len(player.winnings_pile) < 3) or (
+            len(dealer.hand) < 3 and len(dealer.winnings_pile) < 3):
         print('Not enough cards to go to WAR')
         for card in war_cards:
             player.add_card(card)
@@ -49,6 +50,8 @@ def war_option(player: Player, dealer: Player, played_cards: list[WarCard]):
     elif player_card.value() == dealer_card.value():
         war_option(player, dealer, war_cards)
 
+
+# TODO: Convert this into an object
 def play_war(player: Player):
     """
     The implementation of the card game War
@@ -113,7 +116,8 @@ def play_war(player: Player):
         player1_total = len(player1.hand) + len(player1.winnings_pile)
         player2_total = len(player2.hand) + len(player2.winnings_pile)
         print(f'{player1_total + player2_total} cards in total')
-        print(f'{player1.name}:{len(player1)} in hand {len(player1.winnings_pile)} in pile.\n{player2.name}:{len(player2)} in hand {len(player2.winnings_pile)} in pile.')
+        print(
+            f'{player1.name}:{len(player1)} in hand {len(player1.winnings_pile)} in pile.\n{player2.name}:{len(player2)} in hand {len(player2.winnings_pile)} in pile.')
         # input()
     if player1_total == 52:
         winner = player1.name

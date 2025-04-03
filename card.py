@@ -32,12 +32,14 @@ class Card:
         else:
             return int(self.number)
 
+
 class WarCard(Card):
     """
                     Returns the numerical value of the card.
 
                     Jack is 11, Queen is 12, King is 13, and Ace is 14.
             """
+
     def value(self) -> int:
         if self.number in ['J', 'Q', 'K', 'A']:
             return 11 + ['J', 'Q', 'K', 'A'].index(self.number)

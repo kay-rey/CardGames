@@ -1,9 +1,9 @@
 import sys
 
 from blackjack import play_blackjack
-from war import play_war
 from deck import Deck
 from player import Player, clear_list_of_hands, yes_no_input
+from war import play_war
 
 
 def main():
@@ -50,6 +50,7 @@ def main():
     while game_choice == 2:
         play_war(player)
         return
+
 
 if __name__ == '__main__':
     main()

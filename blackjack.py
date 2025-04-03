@@ -108,6 +108,7 @@ def player_outcome(player_total: int, dealer_total: int) -> str:
         return 'PUSH'
 
 
+# TODO: Convert this into an object
 def play_blackjack(player: Player, dealer: Player, decks: Deck) -> None:
     """
         Plays a game of Blackjack.

@@ -1,8 +1,8 @@
+import random
 from dataclasses import dataclass, field
 
 from card import Card, WarCard
 from deck import Deck
-import random
 
 
 @dataclass
@@ -53,6 +53,7 @@ class Player:
         else:
             print('No more cards in hand')
             return None
+
     def shuffle_hand(self):
         if self.hand:
             random.shuffle(self.hand)
@@ -66,11 +67,11 @@ class Player:
         num_aces = 0
         for card in self.hand:
             card_value = card.value()
-            if card_value == '11': # deals with aces
+            if card_value == '11':  # deals with aces
                 num_aces += 1
             hand_total += card_value
 
-        while hand_total > blackjack and num_aces > 0: # implements soft totals with aces
+        while hand_total > blackjack and num_aces > 0:  # implements soft totals with aces
             hand_total -= 10
             num_aces -= 1
         return hand_total
@@ -85,6 +86,7 @@ class Player:
             self.hand += self.winnings_pile
             self.shuffle_hand()
             self.winnings_pile.clear()
+
 
 def clear_list_of_hands(players: list[Player]):
     for player in players:
