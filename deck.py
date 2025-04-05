@@ -4,12 +4,13 @@ from card import Card, WarCard
 
 
 class Deck:
-    cards: list[Card]
+    def __init__(self):
+        self.cards: list[Card] = []
 
     def __len__(self) -> int:
         return len(self.cards)
 
-    def create_deck(self, num_decks: int, card_type: str):
+    def create_and_shuffle_deck(self, num_decks: int, card_type: str):
         deck = []
         suits = ['Spade', 'Heart', 'Club', 'Diamond']
         number = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
@@ -22,6 +23,7 @@ class Deck:
                 deck.append(currCard)
         if num_decks > 0:
             deck *= num_decks
+        shuffle(deck)
         self.cards = deck
 
     def shuffle_deck(self):

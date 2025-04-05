@@ -42,6 +42,7 @@ class Player:
 
     def clear_hand(self):
         self.hand.clear()
+        self.winnings_pile.clear()
 
     def add_card(self, card: Card):
         if isinstance(card, Card):
@@ -78,7 +79,8 @@ class Player:
 
     def add_to_winnings(self, winnings_pile: list[WarCard]):
         if winnings_pile:
-            self.winnings_pile += winnings_pile
+            for card in winnings_pile:
+                self.winnings_pile.append(card)
 
     def add_winnings_to_hand(self):
         if self.winnings_pile:
