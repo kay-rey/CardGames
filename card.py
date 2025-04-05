@@ -17,7 +17,7 @@ class Card:
         return f'{self.number} of {self.suit}s'
 
     def __repr__(self):
-        return f'Card(number=\'{self.number}\', suit=\'{self.suit}\''
+        return f'Card(number=\'{self.number}\', suit=\'{self.suit}\')'
 
     def value(self) -> int:
         """

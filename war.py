@@ -9,6 +9,7 @@ from deck import Deck
 from player import Player
 
 
+# TODO: Test this function when it is recursively called more than once
 def war_option(player: Player, dealer: Player, played_cards: list[WarCard]):
     """
     Used when the players have the same value card. 3 cards are drawn but only the last card that players drew is used to compare to find the winner
@@ -51,6 +52,12 @@ def war_option(player: Player, dealer: Player, played_cards: list[WarCard]):
         war_option(player, dealer, war_cards)
 
 
+def does_player_have_enough_cards(player: Player) -> bool:
+    if len(player.hand) < 3 and len(player.winnings_pile) < 3:
+        return False
+    return True
+
+
 # TODO: Convert this into an object
 def play_war(player: Player):
     """
@@ -64,6 +71,8 @@ def play_war(player: Player):
     total_bet: int = 0
     player1: Player = player
     player2: Player = Player('Dealer')
+    player1_winner = False
+    player2_winner = False
     player1_total = 0
     player2_total = 0
     deck: Deck = Deck()
@@ -73,7 +82,7 @@ def play_war(player: Player):
         try:
             initial_bet = int(input('How much would you like to bet?\n'))
             total_bet = initial_bet
-            if 1 <= total_bet <= player.money:
+            if 1 <= total_bet <= player1.money:
                 print(f'You bet {total_bet}')
                 break
             print('Enter a valid input')
@@ -106,11 +115,19 @@ def play_war(player: Player):
             print(f'{player2.name} won this hand')
             player2.add_to_winnings(played_cards)
         elif card1.value() == card2.value():
-            if (len(player.hand) < 3 and len(player.winnings_pile) < 3) or (
-                    len(player2.hand) < 3 and len(player2.winnings_pile) < 3):
+            for player_from_list in [player1, player2]:
+                if len(player_from_list) > 3 >= len(player_from_list.winnings_pile):
+                    player_from_list.add_winnings_to_hand()
+            if not does_player_have_enough_cards(player1):
                 print('Not enough card to go to war')
-                player.add_card(card1)
-                player2.add_card(card2)
+                for cards in range(len(player2.hand)):
+                    card_moved = player2.pop_top_card()
+                    player1.add_card(card_moved)
+            elif not does_player_have_enough_cards(player2):
+                print('Not enough card to go to war')
+                for cards in range(len(player1.hand)):
+                    card_moved = player1.pop_top_card()
+                    player2.add_card(card_moved)
             else:
                 war_option(player1, player2, played_cards)
         player1_total = len(player1.hand) + len(player1.winnings_pile)
