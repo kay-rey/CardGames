@@ -1,3 +1,15 @@
+"""
+Card module for card games.
+
+This module defines the base Card class and its specialized variant WarCard.
+These classes represent playing cards with their values and suits, providing
+methods to compare and display cards appropriately for different game types.
+
+Classes:
+    Card: Base class for playing cards used in games like Blackjack
+    WarCard: Specialized card class for the War card game with different card values
+"""
+
 from dataclasses import dataclass
 
 
@@ -21,9 +33,13 @@ class Card:
 
     def value(self) -> int:
         """
-                Returns the numerical value of the card.
+        Returns the numerical value of the card for Blackjack.
 
-                Jack, Queen, and King are 10. Ace is 11 or 1.
+        Returns:
+            int: Card's value where:
+                - Number cards (2-10) = their face value
+                - Face cards (Jack, Queen, King) = 10
+                - Ace = 11 (can be adjusted to 1 in hand calculation)
         """
         if self.number in ('Jack', 'Queen', 'King'):
             return 10
@@ -35,10 +51,18 @@ class Card:
 
 class WarCard(Card):
     """
-                    Returns the numerical value of the card.
+    Specialized card class for the War card game.
 
-                    Jack is 11, Queen is 12, King is 13, and Ace is 14.
-            """
+    Inherits from Card but implements different card values where:
+    - Number cards (2-10) = their face value
+    - Jack = 11
+    - Queen = 12
+    - King = 13
+    - Ace = 14
+
+    This ensures proper card comparison in the War game where
+    Ace is always highest.
+    """
 
     def value(self) -> int:
         if self.number in ['Jack', 'Queen', 'King', 'Ace']:

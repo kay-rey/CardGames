@@ -1,6 +1,22 @@
+"""
+Blackjack game implementation module.
+
+This module contains the core game logic for Blackjack, including:
+- Player actions (hit, stand, double down, split)
+- Dealer behavior
+- Hand evaluation
+- Betting mechanics
+
+Game Rules:
+- Players try to get as close to 21 as possible without going over
+- Number cards are worth their face value
+- Face cards (Jack, Queen, King) are worth 10
+- Aces are worth 11 or 1
+- Dealer must hit on 16 and stand on 17
+"""
+
 from typing import Dict
 
-from card import Card
 from deck import Deck
 from player import Player, deal_card
 
@@ -16,6 +32,15 @@ PLAYER_TURN: bool
 
 
 def hit_or_stand_player_input() -> str:
+    """
+       Prompts the player for their next action.
+
+       Returns:
+           str: Player's choice:
+               'HIT' - Draw another card
+               'STAND' - Keep current hand
+               'DOUBLEDOWN' - Double bet and receive one final card
+       """
     while True:
         try:
             player_input = int(input('Would you like to [1]Hit, [2]Stand, or [3]Double Down?\n'))
@@ -31,7 +56,17 @@ def hit_or_stand_player_input() -> str:
             print('Enter a valid number')
 
 
-def split_or_hit_or_stand() -> str:  # if the player has two of the same value cards
+def split_or_hit_or_stand() -> str:
+    """
+        Prompts the player for their next action when split is available.
+
+        Returns:
+            str: Player's choice:
+                'HIT' - Draw another card
+                'STAND' - Keep current hand
+                'DOUBLEDOWN' - Double bet and receive one final card
+                'SPLIT' - Split matching cards into two hands
+        """
     while True:
         try:
             player_input = int(input('Would you like to [1]Hit, [2]Stand, [3]Double Down, or [4]Split?\n'))
@@ -157,7 +192,8 @@ def play_blackjack(player: Player, dealer: Player, decks: Deck) -> None:
         print(f'The dealer revealed a {dealer.hand[0]}')
         print(f'You have a hand total of {str(player_total)} with a hand of {player.hand[0]} and {player.hand[1]}')
         while PLAYER_TURN:
-            if player.hand[0].number == player.hand[1].number:  # checks to see if the cards are the same value to give the user the option to split
+            if player.hand[0].number == player.hand[
+                1].number:  # checks to see if the cards are the same value to give the user the option to split
                 player_input: str = split_or_hit_or_stand()
             else:
                 player_input: str = hit_or_stand_player_input()

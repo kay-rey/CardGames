@@ -1,3 +1,11 @@
+"""
+Player module for card games.
+
+This module provides the Player class and related utility functions for managing
+players in various card games. It handles player attributes like name, money,
+cards in hand, and winnings pile.
+"""
+
 import random
 from dataclasses import dataclass, field
 
@@ -7,7 +15,15 @@ from deck import Deck
 
 @dataclass
 class Player:
-    """Represents a player in the Blackjack game."""
+    """
+       Represents a player in card games.
+
+       Attributes:
+           name (str): Player's name
+           money (int): Player's current money/chips
+           hand (list[Card]): Cards currently in player's hand
+           winnings_pile (list[Card]): Cards won by the player (used in War)
+       """
     name: str
     money: int = 0
     hand: list[Card] = field(default_factory=list)
@@ -20,6 +36,7 @@ class Player:
         return f'Player(name=\'{self.name}\', money={self.money}, hand={self.hand}'
 
     def __hash__(self) -> int:
+        """Enables using Player objects as dictionary keys."""
         return hash(self.name)
 
     def __eq__(self, other) -> bool:
@@ -28,6 +45,7 @@ class Player:
         return (self.name, self.hand) == (other.name, other.hand)
 
     def __len__(self) -> int:
+        """Returns the number of cards in the player's hand."""
         return len(self.hand)
 
     def add_money(self, amount: int) -> None:
@@ -61,7 +79,12 @@ class Player:
 
     def get_hand_value(self) -> int:
         """
-        Calculates the total value of the player's hand, considering Aces.
+        Calculates the total value of the player's hand for Blackjack.
+
+        Handles Ace values (1 or 11) automatically based on the total.
+
+        Returns:
+            int: The total value of the hand
         """
         blackjack = 21
         hand_total = 0
@@ -90,6 +113,7 @@ class Player:
             self.winnings_pile.clear()
 
 
+# Utility functions
 def clear_list_of_hands(players: list[Player]):
     for player in players:
         player.clear_hand()

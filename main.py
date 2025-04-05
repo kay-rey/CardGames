@@ -1,3 +1,19 @@
+"""
+CardGames - A collection of classic card games implemented in Python.
+
+This module serves as the main entry point for the card games application.
+It provides a command-line interface for users to choose and play different
+card games including Blackjack and War.
+
+Games available:
+    - Blackjack: A classic casino game where players try to get as close to 21 as possible
+    - War: A two-player card game where the highest card wins
+
+Usage:
+    Run this file directly to start the game:
+    $ python main.py
+"""
+
 import sys
 
 from blackjack import play_blackjack
@@ -7,6 +23,15 @@ from war import War
 
 
 def get_game_choice():
+    """
+        Prompts the user to choose a game to play.
+
+        Returns:
+            int: The user's game choice:
+                 1 for Blackjack
+                 2 for War
+                 3 to exit the program
+        """
     print('Do you want to play [1]Blackjack or [2]War? Type [3] to EXIT')
     while True:
         try:
@@ -21,6 +46,13 @@ def get_game_choice():
 
 
 def main():
+    """
+        Main game loop that handles game selection and player progression.
+
+        Initializes the player with starting money and manages the deck of cards.
+        Allows the player to switch between games or exit the program.
+        """
+    # Initialize player with starting money
     player = Player('Kevin', 1000)
     dealer = Player('Dealer')
     num_decks = 1
@@ -29,8 +61,9 @@ def main():
     deck.create_and_shuffle_deck(num_decks, 'blackjack')
     deck.shuffle_deck()
     deck_amount = len(deck)
+    # Main game selection loop
     game_choice = get_game_choice()
-    while game_choice == 1:
+    while game_choice == 1:  # Blackjack
         play_blackjack(player, dealer, deck)
         if player.money <= 0:
             print('You ran out of money. BYE!')
@@ -45,12 +78,12 @@ def main():
         else:
             game_choice = get_game_choice()
 
-    while game_choice == 2:
+    while game_choice == 2:  # War
         war = War(player)
         war.play_war()
         game_choice = get_game_choice()
 
-    if game_choice == 3:
+    if game_choice == 3:  # Exit
         print(f'You left with {player.money} in your pocket')
         print('BYEEE!!')
         sys.exit()
