@@ -112,6 +112,17 @@ class Player:
             self.shuffle_hand()
             self.winnings_pile.clear()
 
+    def get_bet_amount(self) -> int:
+        while True:  # loop starts the betting
+            try:
+                bet_amount = int(input('How much would you like to bet?\n'))
+                if 1 <= bet_amount <= self.money:
+                    print(f'You bet {bet_amount}')
+                    return bet_amount
+                print('Enter a valid input')
+            except ValueError:
+                print('Enter a valid number')
+
 
 # Utility functions
 def clear_list_of_hands(players: list[Player]):
@@ -133,3 +144,4 @@ def yes_no_input() -> bool:
 
 def deal_card(player_hand: list[Card], deck: Deck):
     player_hand.append(deck.pop_deck())
+
