@@ -16,9 +16,9 @@ Usage:
 
 import sys
 
-from blackjack import play_blackjack
+from blackjack import Blackjack
 from deck import Deck
-from player import Player, clear_list_of_hands, yes_no_input
+from player import Player, yes_no_input
 from war import War
 
 
@@ -54,7 +54,6 @@ def main():
         """
     # Initialize player with starting money
     player = Player('Kevin', 1000)
-    dealer = Player('Dealer')
     num_decks = 1
     # decks = createDeck(num_decks)
     deck = Deck()
@@ -64,7 +63,9 @@ def main():
     # Main game selection loop
     game_choice = get_game_choice()
     while game_choice == 1:  # Blackjack
-        play_blackjack(player, dealer, deck)
+        blackjack = Blackjack(player, deck)
+        blackjack.play_blackjack()
+        player.clear_hand()
         if player.money <= 0:
             print('You ran out of money. BYE!')
             sys.exit()
@@ -74,13 +75,13 @@ def main():
             if len(deck) < int(deck_amount // 2):
                 deck.create_and_shuffle_deck(num_decks, 'blackjack')
                 deck.shuffle_deck()
-            clear_list_of_hands([player, dealer])
         else:
             game_choice = get_game_choice()
 
     while game_choice == 2:  # War
         war = War(player)
         war.play_war()
+        player.clear_hand()
         game_choice = get_game_choice()
 
     if game_choice == 3:  # Exit
