@@ -90,8 +90,8 @@ class Player:
         hand_total = 0
         num_aces = 0
         for card in self.hand:
-            card_value = card.value()
-            if card_value == '11':  # deals with aces
+            card_value: int = card.value()
+            if card_value == 11:  # deals with aces
                 num_aces += 1
             hand_total += card_value
 
