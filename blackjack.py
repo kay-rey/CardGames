@@ -26,15 +26,14 @@ class Blackjack:
     NUM_DECKS: int = 1
     DEALER_STAND_NUMBER: int = 17
     BLACKJACK: int = 21
-    # Global variables
-    player_turn: bool
-    hands_in_play: Dict[Player, int] = {}  # Type hint for clarity
-    split_hand_count: int
 
     def __init__(self, player: Player, deck: Deck):
         self.player = player
         self.deck = deck
         self.dealer = Player('Dealer')
+        self.player_turn: bool = True
+        self.hands_in_play: Dict[Player, int] = {}  # Type hint for clarity
+        self.split_hand_count: int = 0
 
     def play_blackjack(self):
         print(f'You have ${self.player.money} in the bank')
@@ -70,9 +69,8 @@ class Blackjack:
             print(
                 f'You have a hand total of {str(player_total)} with a hand of {self.player.hand[0]} and {self.player.hand[1]}')
             # Player's turn
-            self.player_turn = True
             while self.player_turn:
-                player_input = self.split_or_hit_or_stand()
+                player_input = self.split_or_hit_or_stand(self.player)
                 print('You chose to ' + player_input)
                 if player_input == 'HIT':
                     deal_card(self.player.hand, self.deck)
@@ -99,8 +97,8 @@ class Blackjack:
                 elif player_input == 'SPLIT':
                     self.split_hand_count += 1
                     extraHand = Player('split hand : ' + str(self.split_hand_count), 0, [self.player.hand.pop()])
-                    self.split_gameplay(extraHand, self.player, initial_bet)
-                    self.split_gameplay(self.player, self.player, initial_bet)
+                    self.split_gameplay(extraHand, initial_bet)
+                    self.split_gameplay(self.player, initial_bet)
                     self.player_turn = False
 
             if not self.hands_in_play:
@@ -120,7 +118,7 @@ class Blackjack:
                     self.player.add_money(self.hands_in_play[betted_hand])
                 return
             for hand, bet_amount in self.hands_in_play.items():  # goes through all the hands if the player split hands
-                player_total = self.player.get_hand_value()
+                player_total = hand.get_hand_value()
                 player_outcome_condition = self.player_outcome(player_total, dealer_total)
                 if player_outcome_condition == 'PUSH':
                     print(f'You and the dealer both have {player_total}. Push! No one wins')
@@ -131,7 +129,6 @@ class Blackjack:
                 else:
                     print(f'Your hand of {player_total} lost to the dealer\'s {dealer_total}. You LOST!!')
                     self.player.subtract_money(bet_amount)
-                return
 
     def player_outcome(self, player_total: int, dealer_total: int) -> str:
         if dealer_total < player_total <= self.BLACKJACK:
@@ -141,7 +138,7 @@ class Blackjack:
         else:
             return 'PUSH'
 
-    def split_or_hit_or_stand(self) -> str:
+    def split_or_hit_or_stand(self, curr_player: Player) -> str:
         """
             Prompts the player for their next action when split is available.
 
@@ -153,7 +150,7 @@ class Blackjack:
                     'SPLIT' - Split matching cards into two hands
             """
         # checks to see if the cards are the same value to give the user the option to split
-        if self.player.hand[0].number == self.player.hand[1].number:
+        if curr_player.hand[0].number == curr_player.hand[1].number:
             while True:
                 try:
                     player_input = int(input('Would you like to [1]Hit, [2]Stand, [3]Double Down, or [4]Split?\n'))
@@ -184,47 +181,46 @@ class Blackjack:
                 except ValueError:
                     print('Enter a valid number')
 
-    def split_gameplay(self, player: Player, player_bank: Player, initial_bet: int) -> None:
+    def split_gameplay(self, split_player: Player, initial_bet: int) -> None:
         """
             Handles the gameplay logic for a split hand.  REMOVED GLOBAL VARIABLES
             Args:
-                player: The Player object representing the split hand.
-                player_bank: The Player object representing the player's bank.
+                split_player: The Player object representing the split hand.
                 initial_bet: The initial bet amount for this hand.
         """
         curr_bet: int = initial_bet
-        deal_card(player.hand, self.deck)
-        print(f'This hand consists of: {player.hand[0]} and {player.hand[1]}')
+        deal_card(split_player.hand, self.deck)
+        print(f'This hand consists of: {split_player.hand[0]} and {split_player.hand[1]}')
         while True:
-            player_input: str = self.split_or_hit_or_stand()
+            player_input: str = self.split_or_hit_or_stand(split_player)
             print('You chose to ' + player_input)
             if player_input == 'HIT':
-                deal_card(player.hand, self.deck)
-                player_total = player.get_hand_value()
-                print(f'You were dealt a {player.hand[-1]}, your total is now {player_total}')
+                deal_card(split_player.hand, self.deck)
+                player_total = split_player.get_hand_value()
+                print(f'You were dealt a {split_player.hand[-1]}, your total is now {player_total}')
                 if player_total > self.BLACKJACK:
                     print('You busted! Bye Bye!!')
-                    player_bank.subtract_money(curr_bet)
+                    self.player.subtract_money(curr_bet)
                     break
             elif player_input == 'STAND':
-                self.hands_in_play[player] = curr_bet
+                self.hands_in_play[split_player] = curr_bet
                 self.player_turn = False
                 break
             elif player_input == 'DOUBLEDOWN':
                 total_bet = curr_bet * 2
-                deal_card(player.hand, self.deck)
-                player_total = player.get_hand_value()
-                print(f'You were dealt a {player.hand[-1]} with a total of {player_total}')
+                deal_card(split_player.hand, self.deck)
+                player_total = split_player.get_hand_value()
+                print(f'You were dealt a {split_player.hand[-1]} with a total of {player_total}')
                 if player_total > self.BLACKJACK:
                     print('You BUSTED. Better luck next time')
-                    player.subtract_money(total_bet)
+                    self.player.subtract_money(total_bet)
                     break
-                self.hands_in_play[player] = total_bet
+                self.hands_in_play[split_player] = total_bet
                 self.player_turn = False
                 return
             elif player_input == 'SPLIT':
                 self.split_hand_count += 1
-                extraHand = Player('split hand: ' + str(self.split_hand_count), 0, [player.hand.pop()])
-                self.split_gameplay(extraHand, player_bank, initial_bet)
-                self.split_gameplay(player, player_bank, initial_bet)
+                extraHand = Player('split hand: ' + str(self.split_hand_count), 0, [split_player.hand.pop()])
+                self.split_gameplay(extraHand, initial_bet)
+                self.split_gameplay(split_player, initial_bet)
                 self.player_turn = False
