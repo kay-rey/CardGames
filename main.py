@@ -54,16 +54,10 @@ def main():
         """
     # Initialize player with starting money
     player = Player('Kevin', 1000)
-    num_decks = 1
-    # decks = createDeck(num_decks)
-    deck = Deck()
-    deck.create_and_shuffle_deck(num_decks, 'blackjack')
-    deck.shuffle_deck()
-    deck_amount = len(deck)
     # Main game selection loop
     game_choice = get_game_choice()
     while game_choice == 1:  # Blackjack
-        blackjack = Blackjack(player, deck)
+        blackjack = Blackjack(player)
         blackjack.play_blackjack()
         player.clear_hand()
         if player.money <= 0:
@@ -71,11 +65,7 @@ def main():
             sys.exit()
         print('Would you like to play again? Y/N')
         play_again_input = yes_no_input()
-        if play_again_input:
-            if len(deck) < int(deck_amount // 2):
-                deck.create_and_shuffle_deck(num_decks, 'blackjack')
-                deck.shuffle_deck()
-        else:
+        if not play_again_input:
             game_choice = get_game_choice()
 
     while game_choice == 2:  # War
