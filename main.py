@@ -17,7 +17,6 @@ Usage:
 import sys
 
 from blackjack import Blackjack
-from deck import Deck
 from player import Player, yes_no_input
 from war import War
 

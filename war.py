@@ -54,6 +54,8 @@ class War:
         deck (Deck): The deck of cards used for the game.
         dealer (Player): The computer-controlled dealer.
     """
+    NUM_DECKS: int = 1  # Standard war uses only 1 deck
+    DECK_LENGTH: int = (52 * NUM_DECKS)
 
     def __init__(self, player: Player):
         """
@@ -66,9 +68,37 @@ class War:
         """
         self.player: Player = player
         self.deck = Deck()
+        self.deck.create_and_shuffle_deck(self.NUM_DECKS, 'war')
         self.dealer = Player('Dealer')
+        self.player_list: list[Player] = [self.player, self.dealer]
 
-    def play_war(self):
+    def _check_hand_count_and_replenish(self) -> bool:
+        for players in self.player_list:
+            if (len(players) <= 1) and players.winnings_pile:
+                players.add_winnings_to_hand()
+            if not players.hand:
+                return False
+        return True
+
+    def _evaluate_outcome(self, player_card: WarCard, dealer_card: WarCard) -> None:
+        """
+        Evaluates who the outcome of the round. Calls the _war_option function if both the cards are the same
+        :param player_card:
+        :param dealer_card:
+        :return:
+        """
+        played_cards = [player_card, dealer_card]
+        if player_card.value() > dealer_card.value():
+            print(f'>> {self.player.name} wins the hand! <<')
+            self.player.add_to_winnings(played_cards)
+        elif player_card.value() < dealer_card.value():
+            print(f'>> {self.dealer.name} wins the hand! <<')
+            self.dealer.add_to_winnings(played_cards)
+        elif player_card.value() == dealer_card.value():  # If the cards have the same value, initiate the war gameplay
+            print('WAR!!')
+            self._war_option(played_cards)
+
+    def play_war(self) -> None:
         """
         Executes the gameplay logic for the card game War.
 
@@ -77,29 +107,14 @@ class War:
         and determines the winner based on who accumulates all the cards. It also
         updates the player's money based on the outcome of the game.
         """
-        player_card: WarCard
-        dealer_card: WarCard
-        num_decks = 1  # Standard war uses only 1 deck
-        self.deck.create_and_shuffle_deck(num_decks, 'war')
         # --- Betting Phase ---
-        while True:
-            try:
-                initial_bet = int(input('How much would you like to bet?\n'))
-                total_bet = initial_bet
-                if 1 <= total_bet <= self.player.money:
-                    print(f'You bet {total_bet}')
-                    break
-                print('Enter a valid input')
-            except ValueError:
-                print('Enter a valid number')
+        initial_bet = self.player.get_bet_amount()
+        total_bet = initial_bet
 
         # --- Dealing Phase ---
         for _ in range(len(self.deck) // 2):  # Deal half the deck to each of the players
             self.player.add_card(self.deck.pop_deck())
             self.dealer.add_card(self.deck.pop_deck())
-        # Players shuffle their initial hands
-        self.player.shuffle_hand()
-        self.dealer.shuffle_hand()
         player_total = len(self.player.hand) + len(self.player.winnings_pile)
         dealer_total = len(self.dealer.hand) + len(self.dealer.winnings_pile)
 
@@ -110,29 +125,14 @@ class War:
         while min(player_total, dealer_total) > 0:
             round_num += 1
             # Check if players need to replenish their hands from winnings
-            if len(self.player) <= 1:
-                self.player.add_winnings_to_hand()
-            if len(self.dealer) <= 1:
-                self.dealer.add_winnings_to_hand()
-            if self.player and self.dealer:
-                player_card = self.player.pop_top_card()
-                dealer_card = self.dealer.pop_top_card()
-            else:
+            if not self._check_hand_count_and_replenish():
                 return
+            player_card = self.player.pop_top_card()
+            dealer_card = self.dealer.pop_top_card()
             print(f'{self.player.name} reveals: {player_card}')
             print(f'{self.dealer.name} reveals: {dealer_card}')
-            played_cards = [player_card, dealer_card]
             # Check the card values to evaluate the outcome
-            if player_card.value() > dealer_card.value():
-                print(f'>> {self.player.name} wins the hand! <<')
-                self.player.add_to_winnings(played_cards)
-            elif player_card.value() < dealer_card.value():
-                print(f'>> {self.dealer.name} wins the hand! <<')
-                self.dealer.add_to_winnings(played_cards)
-            elif player_card.value() == dealer_card.value():  # If the cards have the same value, initiate the war gameplay
-                print('WAR!!')
-                self.war_option(played_cards)
-
+            self._evaluate_outcome(player_card, dealer_card)
             # --- Round Summary ---
             player_total = len(self.player.hand) + len(self.player.winnings_pile)
             dealer_total = len(self.dealer.hand) + len(self.dealer.winnings_pile)
@@ -143,13 +143,13 @@ class War:
                 f' {self.dealer.name}: {len(self.dealer.hand)} hand / {len(self.dealer.winnings_pile)} winnings (Total: {dealer_total})')
             # input()
             print('\n')
-        if player_total == 52:
+        if player_total == self.DECK_LENGTH:
             winner = self.player.name
             print(f'{winner} wins the game!')
             self.player.add_money(total_bet)
             print(f'Your total money is now ${self.player.money}.')
 
-        elif dealer_total == 52:
+        elif dealer_total == self.DECK_LENGTH:
             winner = self.dealer.name
             print(f'{winner} wins the game!')
             self.player.subtract_money(total_bet)
@@ -160,7 +160,7 @@ class War:
         clear_list_of_hands([self.player, self.dealer])
         return
 
-    def war_option(self, played_cards: list[WarCard]):
+    def _war_option(self, played_cards: list[WarCard]):
         """
         Used when the players have the same value card. 3 cards are drawn but only the last card that players drew is used to compare to find the winner
         :param played_cards: takes in the cards that were just played to be able to give to the winner
@@ -210,4 +210,4 @@ class War:
             self.dealer.add_to_winnings(war_cards)
         elif player_war_card.value() == dealer_war_card.value():
             print("!!! DOUBLE WAR !!! (Tied again!)")
-            self.war_option(war_cards)
+            self._war_option(war_cards)
