@@ -74,7 +74,7 @@ class War:
 
     def _check_hand_count_and_replenish(self) -> bool:
         for players in self.player_list:
-            if (len(players) <= 1) and players.winnings_pile:
+            if (len(players) < 1) and players.winnings_pile:
                 players.add_winnings_to_hand()
             if not players.hand:
                 return False
