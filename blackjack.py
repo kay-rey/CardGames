@@ -66,8 +66,7 @@ class Blackjack:
             self.player.add_money(winnings)
             return True
         if dealer_total == self.BLACKJACK:
-            print(f'The dealer hit blackjack with a hand of {str(self.dealer.hand[0])} and {str(
-                self.dealer.hand[1])}. Better luck next time')
+            print(f'The dealer hit blackjack with a hand of {str(self.dealer.hand[0])} and {str(self.dealer.hand[1])}. Better luck next time')
             self.player.subtract_money(total_bet)
             return True
         return False
