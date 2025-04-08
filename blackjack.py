@@ -165,9 +165,9 @@ class Blackjack:
         self._handle_split_gameplay(player, initial_bet)
 
     def _evaluate_outcome(self, player_total: int, dealer_total: int) -> str:
-        if dealer_total < player_total <= self.BLACKJACK:
+        if (dealer_total < player_total <= self.BLACKJACK) or (dealer_total > self.BLACKJACK >= player_total):
             return 'WIN'
-        elif player_total < dealer_total <= self.BLACKJACK:
+        elif (player_total < dealer_total <= self.BLACKJACK) or (player_total > self.BLACKJACK >= dealer_total):
             return 'LOSE'
         else:
             return 'PUSH'
