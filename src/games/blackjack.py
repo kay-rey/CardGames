@@ -17,8 +17,7 @@ Game Rules:
 
 from typing import Dict
 
-from deck import Deck
-from player import Player, deal_card
+from src.core import Player, deal_card, Deck
 
 
 class Blackjack:

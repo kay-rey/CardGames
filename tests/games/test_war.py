@@ -2,9 +2,9 @@ from unittest.mock import patch
 
 import pytest
 
-from card import WarCard
-from player import Player
-from war import War, does_player_have_enough_cards
+from src.core.card import WarCard
+from src.core.player import Player
+from src.games.war import War, does_player_have_enough_cards
 
 
 @pytest.fixture

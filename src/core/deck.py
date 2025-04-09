@@ -7,7 +7,7 @@ It supports creating multiple decks, shuffling, and drawing cards for various ca
 
 from random import shuffle
 
-from card import Card, WarCard
+from src.core import Card, WarCard
 
 
 class Deck:

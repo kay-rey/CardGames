@@ -2,8 +2,8 @@ from unittest.mock import patch
 
 import pytest
 
-from card import Card, WarCard
-from player import Player, yes_no_input, clear_list_of_hands
+from src.core.card import Card, WarCard
+from src.core.player import Player, yes_no_input, clear_list_of_hands
 
 
 @pytest.fixture

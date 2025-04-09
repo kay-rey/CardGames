@@ -9,8 +9,7 @@ cards in hand, and winnings pile.
 import random
 from dataclasses import dataclass, field
 
-from card import Card, WarCard
-from deck import Deck
+from src.core import Card, WarCard, Deck
 
 
 @dataclass

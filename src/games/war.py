@@ -19,9 +19,7 @@ Game Rules:
 - The game ends when one player has all 52 cards.
 """
 
-from card import WarCard
-from deck import Deck
-from player import Player, clear_list_of_hands
+from src.core import WarCard, Deck, Player, clear_list_of_hands
 
 
 def does_player_have_enough_cards(player: Player) -> bool:

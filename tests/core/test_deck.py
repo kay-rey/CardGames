@@ -1,6 +1,4 @@
-import pytest
-
-from deck import Deck
+from src.core.deck import Deck
 
 def test_creating_deck():
     deck = Deck()

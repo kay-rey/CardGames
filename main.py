@@ -16,9 +16,9 @@ Usage:
 
 import sys
 
-from blackjack import Blackjack
-from player import Player, yes_no_input
-from war import War
+from src import Player
+from src.core import yes_no_input
+from src.games import Blackjack, War
 
 
 def get_game_choice():

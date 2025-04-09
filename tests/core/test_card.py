@@ -1,4 +1,4 @@
-from card import Card, WarCard
+from src.core.card import Card, WarCard
 
 
 def test_card_creation():

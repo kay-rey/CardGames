@@ -2,9 +2,9 @@ from unittest.mock import patch
 
 import pytest
 
-from blackjack import Blackjack
-from card import Card
-from player import Player
+from src.games.blackjack import Blackjack
+from src.core.card import Card
+from src.core.player import Player
 
 
 @pytest.fixture
