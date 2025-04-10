@@ -23,20 +23,20 @@ def test_war_initialization(war_game):
 
 def test_check_hand_count_and_replenish(war_game):
     # Test when hands are empty
-    assert war_game._check_hand_count_and_replenish() == False
+    assert war_game.check_hand_count_and_replenish() == False
 
     # Test when player needs to replenish
     war_game.player.hand.clear()
     war_game.player.add_to_winnings([WarCard("2", "Heart")])
     war_game.dealer.hand.clear()
     war_game.dealer.add_to_winnings([WarCard("3", "Heart")])
-    assert war_game._check_hand_count_and_replenish() == True
+    assert war_game.check_hand_count_and_replenish() == True
     assert len(war_game.player.hand) == 1
 
     # Test when player has no cards at all
     war_game.player.hand.clear()
     war_game.player.winnings_pile.clear()
-    assert war_game._check_hand_count_and_replenish() == False
+    assert war_game.check_hand_count_and_replenish() == False
 
 
 def test_does_player_have_enough_cards():
@@ -63,7 +63,7 @@ def test_does_player_have_enough_cards():
 def test_evaluate_outcome(war_game):
     # Test player wins
     with patch('builtins.print'):
-        war_game._evaluate_outcome(
+        war_game.evaluate_outcome(
             WarCard("King", "Heart"),  # Value 13
             WarCard("Queen", "Spade")  # Value 12
         )
@@ -76,7 +76,7 @@ def test_evaluate_outcome(war_game):
 
     # Test dealer wins
     with patch('builtins.print'):
-        war_game._evaluate_outcome(
+        war_game.evaluate_outcome(
             WarCard("Jack", "Heart"),  # Value 11
             WarCard("Queen", "Spade")  # Value 12
         )
@@ -92,7 +92,7 @@ def test_war_option(mock_print, war_game):
     # Test when player doesn't have enough cards
     war_game.player.hand.clear()
     war_game.player.add_card(WarCard("2", "Heart"))  # Only one card
-    war_game._war_option(played_cards)
+    war_game.war_option(played_cards)
     assert len(war_game.dealer.winnings_pile) > 0
     assert len(war_game.player.hand) == 0
 
@@ -108,7 +108,7 @@ def test_war_option(mock_print, war_game):
     # Give dealer only one card
     war_game.dealer.add_card(WarCard("3", "Spade"))
 
-    war_game._war_option(played_cards)
+    war_game.war_option(played_cards)
     assert len(war_game.player.winnings_pile) > 0
     assert len(war_game.dealer.hand) == 0
 

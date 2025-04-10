@@ -35,7 +35,7 @@ def test_blackjack_initial_deal(mock_input, blackjack_game):
 
     # Start a game (but don't actually play through it)
     with patch('builtins.print'):  # Suppress print statements
-        blackjack_game._check_and_shuffle_deck()
+        blackjack_game.check_and_shuffle_deck()
         blackjack_game.player.get_bet_amount()
         # Deal initial cards
         for _ in range(blackjack_game.INITIAL_HAND_SIZE):
@@ -50,28 +50,28 @@ def test_blackjack_initial_deal(mock_input, blackjack_game):
 
 def test_evaluate_outcome(blackjack_game):
     # Test player win
-    assert blackjack_game._evaluate_outcome(20, 19) == 'WIN'
+    assert blackjack_game.evaluate_outcome(20, 19) == 'WIN'
 
     # Test dealer win
-    assert blackjack_game._evaluate_outcome(19, 20) == 'LOSE'
+    assert blackjack_game.evaluate_outcome(19, 20) == 'LOSE'
 
     # Test push
-    assert blackjack_game._evaluate_outcome(20, 20) == 'PUSH'
+    assert blackjack_game.evaluate_outcome(20, 20) == 'PUSH'
 
     # Test bust
-    assert blackjack_game._evaluate_outcome(22, 20) == 'LOSE'
-    assert blackjack_game._evaluate_outcome(20, 22) == 'WIN'
+    assert blackjack_game.evaluate_outcome(22, 20) == 'LOSE'
+    assert blackjack_game.evaluate_outcome(20, 22) == 'WIN'
 
 
 @patch('builtins.input')
 def test_get_player_action(mock_input, blackjack_game):
     # Test basic hit/stand options
     mock_input.return_value = "1"  # Hit
-    action = blackjack_game._get_player_action(can_split=False, can_doubledown=False)
+    action = blackjack_game.get_player_action(can_split=False, can_doubledown=False)
     assert action == "HIT"
 
     mock_input.return_value = "2"  # Stand
-    action = blackjack_game._get_player_action(can_split=False, can_doubledown=False)
+    action = blackjack_game.get_player_action(can_split=False, can_doubledown=False)
     assert action == "STAND"
 
 
@@ -88,7 +88,7 @@ def test_handle_initial_blackjack(mock_input, blackjack_game):
     blackjack_game.dealer.add_card(Card("9", "Club"))
 
     with patch('builtins.print'):  # Suppress print statements
-        result = blackjack_game._handle_initial_blackjack(21, 19, 100)
+        result = blackjack_game.handle_initial_blackjack(21, 19, 100)
     assert result == True  # Player has blackjack
 
 
@@ -107,7 +107,7 @@ def test_handle_dealer_turn(mock_input, blackjack_game):
     blackjack_game.hands_in_play[test_player] = 100
 
     with patch('builtins.print'):  # Suppress print statements
-        dealer_total = blackjack_game._handle_dealer_turn()
+        dealer_total = blackjack_game.handle_dealer_turn()
 
         if dealer_total is not None:
             # Dealer reached a valid standing total
@@ -130,7 +130,7 @@ def test_dealer_bust_scenario(mock_input, blackjack_game):
     blackjack_game.hands_in_play[test_player] = 100
 
     with patch('builtins.print'):  # Suppress print statements
-        result = blackjack_game._handle_dealer_turn()
+        result = blackjack_game.handle_dealer_turn()
 
     assert result is None  # Dealer busted
     assert blackjack_game.dealer.get_hand_value() > blackjack_game.BLACKJACK
@@ -148,7 +148,7 @@ def test_dealer_stands_scenario(mock_input, blackjack_game):
     blackjack_game.hands_in_play[test_player] = 100
 
     with patch('builtins.print'):  # Suppress print statements
-        result = blackjack_game._handle_dealer_turn()
+        result = blackjack_game.handle_dealer_turn()
 
     assert result == 18  # Dealer should stand on 18
     assert result >= blackjack_game.DEALER_STAND_NUMBER

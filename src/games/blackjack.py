@@ -38,10 +38,10 @@ class Blackjack:
         self.hands_in_play: Dict[Player, int] = {}  # Type hint for clarity
         self.split_hand_count: int = 0
         if self.deck is None:
-            self._initialize_deck()
+            self.initialize_deck()
 
     @classmethod
-    def _initialize_deck(cls) -> None:
+    def initialize_deck(cls) -> None:
         """Create and initialize deck"""
         print('\nCreating and shuffling a new deck...')
         cls.deck = Deck()
@@ -49,12 +49,12 @@ class Blackjack:
         cls.deck.shuffle_deck()
         cls._initial_deck_size = len(cls.deck)
 
-    def _check_and_shuffle_deck(self):
+    def check_and_shuffle_deck(self):
         """Check if the deck needs to be reshuffled"""
         if len(self.deck) < (self._initial_deck_size * self.RESHUFFLE_THRESHOLD):
-            self._initialize_deck()
+            self.initialize_deck()
 
-    def _handle_initial_blackjack(self, player_total: int, dealer_total: int, total_bet: int) -> bool:
+    def handle_initial_blackjack(self, player_total: int, dealer_total: int, total_bet: int) -> bool:
         if player_total == self.BLACKJACK and dealer_total == self.BLACKJACK:
             print('You both got a blackjack. No one wins')
             return True
@@ -70,7 +70,7 @@ class Blackjack:
             return True
         return False
 
-    def _get_player_action(self, can_split: bool, can_doubledown: bool) -> str:
+    def get_player_action(self, can_split: bool, can_doubledown: bool) -> str:
         """
         Get the player's next action choice.
 
@@ -100,7 +100,7 @@ class Blackjack:
             except ValueError:
                 print('Enter a valid number')
 
-    def _handle_hit(self, player: Player, bet: int) -> bool:
+    def handle_hit(self, player: Player, bet: int) -> bool:
         """Handle the hit action. Returns False if the player busts"""
         deal_card(player.hand, self.deck)
         player_total = player.get_hand_value()
@@ -111,7 +111,7 @@ class Blackjack:
             return False
         return True
 
-    def _handle_doubledown(self, player: Player, initial_bet: int) -> None:
+    def handle_doubledown(self, player: Player, initial_bet: int) -> None:
         """Handle the double down action. Returns False if the player busts"""
         curr_bet = initial_bet * 2
         deal_card(player.hand, self.deck)
@@ -123,7 +123,7 @@ class Blackjack:
             return
         self.hands_in_play[player] = curr_bet
 
-    def _handle_split_gameplay(self, split_player: Player, initial_bet: int) -> None:
+    def handle_split_gameplay(self, split_player: Player, initial_bet: int) -> None:
         """
             Handles the gameplay logic for a split hand.  REMOVED GLOBAL VARIABLES
             Args:
@@ -138,31 +138,31 @@ class Blackjack:
             can_split = (len(split_player.hand) == self.INITIAL_HAND_SIZE and split_player.hand[0].number ==
                          split_player.hand[1].number and (split_player.money >= initial_bet * 2))
             can_double = (cards_in_hand == self.INITIAL_HAND_SIZE and (split_player.money >= initial_bet * 2))
-            player_input = self._get_player_action(can_split, can_double)
+            player_input = self.get_player_action(can_split, can_double)
 
             print('You chose to ' + player_input)
             if player_input == 'HIT':
-                if not self._handle_hit(split_player, initial_bet):
+                if not self.handle_hit(split_player, initial_bet):
                     return
                 cards_in_hand += 1
             elif player_input == 'STAND':
                 self.hands_in_play[split_player] = initial_bet
                 break
             elif player_input == 'DOUBLE':
-                self._handle_doubledown(split_player, initial_bet)
+                self.handle_doubledown(split_player, initial_bet)
                 break
             elif player_input == 'SPLIT':
-                self._handle_split(split_player, initial_bet)
+                self.handle_split(split_player, initial_bet)
                 break
 
-    def _handle_split(self, player: Player, initial_bet: int) -> None:
+    def handle_split(self, player: Player, initial_bet: int) -> None:
         """Handle splitting a pair of cards"""
         self.split_hand_count += 1
         new_hand = Player(f'Split hand: {str(self.split_hand_count)}', 0, [player.hand.pop()])
-        self._handle_split_gameplay(new_hand, initial_bet)
-        self._handle_split_gameplay(player, initial_bet)
+        self.handle_split_gameplay(new_hand, initial_bet)
+        self.handle_split_gameplay(player, initial_bet)
 
-    def _evaluate_outcome(self, player_total: int, dealer_total: int) -> str:
+    def evaluate_outcome(self, player_total: int, dealer_total: int) -> str:
         if (dealer_total < player_total <= self.BLACKJACK) or (dealer_total > self.BLACKJACK >= player_total):
             return 'WIN'
         elif (player_total < dealer_total <= self.BLACKJACK) or (player_total > self.BLACKJACK >= dealer_total):
@@ -170,7 +170,7 @@ class Blackjack:
         else:
             return 'PUSH'
 
-    def _handle_dealer_turn(self) -> int | None:
+    def handle_dealer_turn(self) -> int | None:
         dealer_total = self.dealer.get_hand_value()
         print(
             f'The dealer reveals their second card: {self.dealer.hand[-1]}. Their hand total is {dealer_total}')
@@ -187,7 +187,7 @@ class Blackjack:
         return dealer_total
 
     def play_blackjack(self) -> None:
-        self._check_and_shuffle_deck()
+        self.check_and_shuffle_deck()
         print(f'You have ${self.player.money} in the bank')
         initial_bet = self.player.get_bet_amount()
         total_bet = initial_bet
@@ -199,7 +199,7 @@ class Blackjack:
             player_total = self.player.get_hand_value()
             dealer_total = self.dealer.get_hand_value()
 
-            if self._handle_initial_blackjack(player_total, dealer_total, total_bet):
+            if self.handle_initial_blackjack(player_total, dealer_total, total_bet):
                 return
 
             print(f'The dealer revealed a {self.dealer.hand[0]}')
@@ -211,19 +211,19 @@ class Blackjack:
                 can_split = (len(self.player.hand) == self.INITIAL_HAND_SIZE and self.player.hand[0].number ==
                              self.player.hand[1].number and (self.player.money >= initial_bet * 2))
                 can_double = (cards_in_hand == self.INITIAL_HAND_SIZE and (self.player.money >= initial_bet * 2))
-                player_input = self._get_player_action(can_split, can_double)
+                player_input = self.get_player_action(can_split, can_double)
                 print('You chose to ' + player_input)
                 if player_input == 'HIT':
-                    if not self._handle_hit(self.player, total_bet):
+                    if not self.handle_hit(self.player, total_bet):
                         return
                 elif player_input == 'STAND':
                     self.hands_in_play[self.player] = total_bet
                     break
                 elif player_input == 'DOUBLE':
-                    self._handle_doubledown(self.player, initial_bet)
+                    self.handle_doubledown(self.player, initial_bet)
                     break
                 elif player_input == 'SPLIT':
-                    self._handle_split(self.player, initial_bet)
+                    self.handle_split(self.player, initial_bet)
                     break
 
             if not self.hands_in_play:
@@ -231,13 +231,13 @@ class Blackjack:
                 return
 
             # Dealer's turn
-            dealer_total = self._handle_dealer_turn()
+            dealer_total = self.handle_dealer_turn()
             if dealer_total is None:
                 return
 
             for hand, bet_amount in self.hands_in_play.items():  # goes through all the hands if the player split hands
                 player_total = hand.get_hand_value()
-                player_outcome_condition = self._evaluate_outcome(player_total, dealer_total)
+                player_outcome_condition = self.evaluate_outcome(player_total, dealer_total)
                 if player_outcome_condition == 'PUSH':
                     print(f'You and the dealer both have {player_total}. Push! No one wins')
                 elif player_outcome_condition == 'WIN':
