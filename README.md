@@ -1,10 +1,10 @@
-# CardGames 🃏
+# DeckPy 🃏
 
 A polished Python implementation of classic card games featuring clean architecture, comprehensive testing, and maintainable code quality.
 
 ## 🎯 Project Overview
 
-This repository demonstrates solid Python development practices through the implementation of multiple card games. Built with modular architecture principles, the project showcases object-oriented design, error handling, and maintainable code structure.
+This repository demonstrates solid Python development practices through the implementation of multiple card games. Built with modular architecture principles, DeckPy showcases object-oriented design, error handling, and maintainable code structure.
 
 ## ✨ Key Features
 
@@ -77,8 +77,8 @@ python --version
 
 ```bash
 # Clone the repository
-git clone https://github.com/kay-rey/CardGames.git
-cd CardGames
+git clone https://github.com/kay-rey/DeckPy.git
+cd DeckPy
 
 # Install testing dependencies (optional)
 pip install -r requirements-test.txt
@@ -223,6 +223,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-⭐ **Star this repository** if you appreciate clean, well-structured Python development!
+⭐ **Star this repository** if you appreciate clean, well-structured Python development with DeckPy!
 
 _Last updated: 2025-04-05 | Built with ❤️ and Python 3.13_
